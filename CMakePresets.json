@@ -1,0 +1,20 @@
+{
+    "version": 6,
+    "configurePresets": [
+        {
+            "name": "debug",
+            "displayName": "STM32G474 Debug",
+            "generator": "Ninja",
+            "binaryDir": "${sourceDir}/build/${presetName}",
+            "cacheVariables": {
+                "CMAKE_TOOLCHAIN_FILE": "${sourceDir}/cmake/stm32_toolchain.cmake"
+            }
+        }
+    ],
+    "buildPresets": [
+        {
+            "name": "debug",
+            "configurePreset": "debug"
+        }
+    ]
+}
