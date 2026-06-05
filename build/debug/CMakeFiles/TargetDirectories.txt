@@ -1,3 +1,0 @@
-D:/Study/GITHUB/FORK/STM32DigitalPowerCmake/build/debug/CMakeFiles/DigitalPowerCmake.elf.dir
-D:/Study/GITHUB/FORK/STM32DigitalPowerCmake/build/debug/CMakeFiles/edit_cache.dir
-D:/Study/GITHUB/FORK/STM32DigitalPowerCmake/build/debug/CMakeFiles/rebuild_cache.dir
