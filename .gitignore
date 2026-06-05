@@ -1,2 +1,11 @@
+# IDE / local config
+.clangd
+.cproject
+.project
+.settings/
+.vscode/
+.mxproject
+
+# project-specific
 AGENTS.md
 build/
