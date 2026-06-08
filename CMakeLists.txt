@@ -40,8 +40,8 @@ set(INC_DIRS
 
 file(GLOB_RECURSE SOURCES
     Core/Src/*.c
-    Drivers/STM32G4xx_HAL_Driver/Src/*.c
     MyCore/Src/*.c
+    Drivers/STM32G4xx_HAL_Driver/Src/*.c
 )
 
 set(STARTUP_FILE Core/Startup/startup_stm32g474retx.s)
