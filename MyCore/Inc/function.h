@@ -127,6 +127,16 @@ extern volatile float powerEfficiency;
 extern volatile _CVCC_Mode CVCC_Mode;
 extern struct _SET_Value SET_Value;
 
+extern volatile float MAX_OTP_VAL;
+extern volatile float MAX_VOUT_OVP_VAL;
+extern volatile float MAX_VOUT_OCP_VAL;
+
+void Init_Flash(void);
+void Update_Flash(void);
+void Read_Flash(void);
+void float_to_bytes(float value, uint8_t *bytes);
+float bytes_to_float(uint8_t *bytes);
+
 #define setRegBits(reg, mask) (reg |= (unsigned int)(mask))
 #define clrRegBits(reg, mask) (reg &= (unsigned int)(~(unsigned int)(mask)))
 #define getRegBits(reg, mask) (reg & (unsigned int)(mask))

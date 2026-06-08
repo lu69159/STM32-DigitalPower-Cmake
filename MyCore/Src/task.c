@@ -4,13 +4,16 @@
 #include "adc.h"
 #include "hrtim.h"
 #include "oled.h"
+#include "function.h"
+#include "Key.h"
+#include "PID.h"
 
 void Task_Init(void){
   DF.SMFlag = Init;                         // 初始化状态机
   HAL_TIM_PWM_Start(&htim8, TIM_CHANNEL_3); // 启动定时器8和通道3的PWM输出
   //FAN_PWM_set(100);                         // 设置风扇转速为100%
   OLED_Init();
-  OLED_PrintString(0, 0, "Loading...", &Font_8x16, OLED_COLOR_WHITE);
+  OLED_PrintString(0, 0, "Loading...", &font16x16, OLED_COLOR_NORMAL);
   HAL_TIM_Base_Start_IT(&htim2);            // 1kHz
   HAL_TIM_Base_Start_IT(&htim3);            // 200Hz
   HAL_TIM_Base_Start_IT(&htim4);            // 100Hz
