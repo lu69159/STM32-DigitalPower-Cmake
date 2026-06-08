@@ -31,6 +31,7 @@ add_definitions(-DUSE_HAL_DRIVER -DSTM32G474xx)
 
 set(INC_DIRS
     Core/Inc
+    MyCore/Inc
     Drivers/STM32G4xx_HAL_Driver/Inc
     Drivers/STM32G4xx_HAL_Driver/Inc/Legacy
     Drivers/CMSIS/Device/ST/STM32G4xx/Include
@@ -40,6 +41,7 @@ set(INC_DIRS
 file(GLOB_RECURSE SOURCES
     Core/Src/*.c
     Drivers/STM32G4xx_HAL_Driver/Src/*.c
+    MyCore/Src/*.c
 )
 
 set(STARTUP_FILE Core/Startup/startup_stm32g474retx.s)
