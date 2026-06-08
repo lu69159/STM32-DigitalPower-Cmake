@@ -4,29 +4,29 @@
 #include "adc.h"
 #include "hrtim.h"
 #include "oled.h"
+#include "function.h"
+#include "Key.h"
+#include "PID.h"
 
 void Task_Init(void){
-  //DF.SMFlag = Init;                         // 初始化状态机
+  DF.SMFlag = Init;                         // 初始化状态机
   HAL_TIM_PWM_Start(&htim8, TIM_CHANNEL_3); // 启动定时器8和通道3的PWM输出
   //FAN_PWM_set(100);                         // 设置风扇转速为100%
-  //OLED显示需要更换库函数
   OLED_Init();
-  //OLED_Clear();
-  //OLED_ShowChinese(40, 24, "启动中");       // 在屏幕中间显示 启动中
-  //OLED_Update();                            // 更新OLED显示内容
+  OLED_PrintString(0, 0, "Loading...", &Font_8x16, OLED_COLOR_WHITE);
   HAL_TIM_Base_Start_IT(&htim2);            // 1kHz
   HAL_TIM_Base_Start_IT(&htim3);            // 200Hz
   HAL_TIM_Base_Start_IT(&htim4);            // 100Hz
-  //Key_Init();
-  //PID_Init();
-  //Init_Flash();
-  //Read_Flash();                             // 读取Flash数据
+  Key_Init();
+  PID_Init();
+  Init_Flash();
+  Read_Flash();                             // 读取Flash数据
 
   HAL_Delay(200);                                        // 延时200ms，等待供电稳定
   HAL_ADCEx_Calibration_Start(&hadc1, ADC_SINGLE_ENDED); // 校准ADC1
   HAL_ADCEx_Calibration_Start(&hadc2, ADC_SINGLE_ENDED); // 校准ADC2
   HAL_ADCEx_Calibration_Start(&hadc5, ADC_SINGLE_ENDED); // 校准ADC5
-  //HAL_ADC_Start_DMA(&hadc1, (uint32_t *)ADC1_RESULT, 4); // 启动ADC1采样和DMA数据传送,采样输入输出电压电流
+  HAL_ADC_Start_DMA(&hadc1, (uint32_t *)ADC1_RESULT, 4); // 启动ADC1采样和DMA数据传送,采样输入输出电压电流
   HAL_ADC_Start(&hadc2);                                 // 启动ADC2采样，采样NTC温度
   HAL_ADC_Start(&hadc5);                                 // 启动ADC5采样，采样单片机CPU温度
 
