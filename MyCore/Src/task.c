@@ -4,9 +4,6 @@
 #include "adc.h"
 #include "hrtim.h"
 #include "oled.h"
-#include "function.h"
-#include "Key.h"
-#include "PID.h"
 
 void Task_Init(void){
   DF.SMFlag = Init;                         // 初始化状态机
