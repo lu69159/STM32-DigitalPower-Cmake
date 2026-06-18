@@ -163,6 +163,7 @@ int main(void)
     if (ms_cnt_2 >= 100)
     {
       ms_cnt_2 = 0;
+      OLED_Display();
       Auto_FAN();
     }
 

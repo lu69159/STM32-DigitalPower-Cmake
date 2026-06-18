@@ -171,6 +171,7 @@ float calculateTemperature(float voltage);
 float one_order_lowpass_filter(float input, float alpha);
 void FAN_PWM_set(uint16_t dutyCycle);
 void Auto_FAN(void);
+void OLED_Display(void);
 
 #define setRegBits(reg, mask) (reg |= (unsigned int)(mask))
 #define clrRegBits(reg, mask) (reg &= (unsigned int)(~(unsigned int)(mask)))

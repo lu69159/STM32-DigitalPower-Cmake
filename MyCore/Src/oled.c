@@ -205,6 +205,24 @@ void OLED_SetPixel(uint8_t x, uint8_t y, OLED_ColorMode color)
 }
 
 /**
+ * @brief 反转指定矩形区域内的所有像素
+ * @param x 起始横坐标
+ * @param y 起始纵坐标
+ * @param w 宽度
+ * @param h 高度
+ */
+void OLED_ReverseArea(uint8_t x, uint8_t y, uint8_t w, uint8_t h)
+{
+  for (uint8_t i = x; i < x + w && i < OLED_COLUMN; i++)
+  {
+    for (uint8_t j = y; j < y + h && j < OLED_ROW; j++)
+    {
+      OLED_GRAM[j / 8][i] ^= (1 << (j % 8));
+    }
+  }
+}
+
+/**
  * @brief 设置显存中一字节数据的某几位
  * @param page 页地址
  * @param column 列地址

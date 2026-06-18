@@ -17,6 +17,7 @@ void OLED_DisPlay_Off();
 void OLED_NewFrame();
 void OLED_ShowFrame();
 void OLED_SetPixel(uint8_t x, uint8_t y, OLED_ColorMode color);
+void OLED_ReverseArea(uint8_t x, uint8_t y, uint8_t w, uint8_t h);
 
 void OLED_DrawLine(uint8_t x1, uint8_t y1, uint8_t x2, uint8_t y2, OLED_ColorMode color);
 void OLED_DrawRectangle(uint8_t x, uint8_t y, uint8_t w, uint8_t h, OLED_ColorMode color);

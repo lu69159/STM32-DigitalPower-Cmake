@@ -5,8 +5,10 @@
 #include "Key.h"
 #include "hrtim.h"
 #include "adc.h"
+#include "oled.h"
 #include <string.h>
 #include <math.h>
+#include <stdio.h>
 
 volatile uint16_t ADC1_RESULT[4] = {0, 0, 0, 0};
 struct _Ctr_value CtrValue = {0, 0, 0, 0, 0, MIN_BUKC_DUTY, 0, 0, 0, 0};
@@ -828,4 +830,181 @@ void Auto_FAN(void)
     else if (TEMP >= 55)    FAN_PWM_set(80);
     else if (TEMP >= 60)    FAN_PWM_set(90);
     else if (TEMP >= 65)    FAN_PWM_set(100);
+}
+
+void OLED_Display(void)
+{
+    char buf[12];
+    if (DF.SMFlag != Err)
+    {
+        OLED_NewFrame();
+        if (Screen_page == VIset_page)
+        {
+            OLED_PrintString(0, 0, "电压设置", &font16x16, OLED_COLOR_NORMAL);
+            OLED_PrintString(0, 16, "电流设置", &font16x16, OLED_COLOR_NORMAL);
+            OLED_PrintString(0, 32, "输出电压", &font16x16, OLED_COLOR_NORMAL);
+            OLED_PrintString(0, 48, "输出电流", &font16x16, OLED_COLOR_NORMAL);
+            OLED_PrintASCIIChar(64, 0, ':', &afont16x8, OLED_COLOR_NORMAL);
+            OLED_PrintASCIIChar(64, 16, ':', &afont16x8, OLED_COLOR_NORMAL);
+            OLED_PrintASCIIChar(64, 32, ':', &afont16x8, OLED_COLOR_NORMAL);
+            OLED_PrintASCIIChar(64, 48, ':', &afont16x8, OLED_COLOR_NORMAL);
+            sprintf(buf, "%5.2f", SET_Value.Vout + 0.005F);
+            OLED_PrintASCIIString(72, 0, buf, &afont16x8, OLED_COLOR_NORMAL);
+            OLED_PrintASCIIChar(112, 0, 'V', &afont16x8, OLED_COLOR_NORMAL);
+            sprintf(buf, "%5.2f", SET_Value.Iout + 0.005F);
+            OLED_PrintASCIIString(72, 16, buf, &afont16x8, OLED_COLOR_NORMAL);
+            OLED_PrintASCIIChar(112, 16, 'A', &afont16x8, OLED_COLOR_NORMAL);
+            sprintf(buf, "%5.2f", VOUT + 0.005F);
+            OLED_PrintASCIIString(72, 32, buf, &afont16x8, OLED_COLOR_NORMAL);
+            OLED_PrintASCIIChar(112, 32, 'V', &afont16x8, OLED_COLOR_NORMAL);
+            sprintf(buf, "%5.2f", IOUT + 0.005F);
+            OLED_PrintASCIIString(72, 48, buf, &afont16x8, OLED_COLOR_NORMAL);
+            OLED_PrintASCIIChar(112, 48, 'A', &afont16x8, OLED_COLOR_NORMAL);
+            if ((DF.SMFlag == Rise) || (DF.SMFlag == Run))
+            {
+                if (CVCC_Mode == CV)
+                    OLED_DrawFilledCircle(124, 40, 3, OLED_COLOR_NORMAL);
+                else if (CVCC_Mode == CC)
+                    OLED_DrawFilledCircle(124, 56, 3, OLED_COLOR_NORMAL);
+            }
+            if (SET_Value.currentSetting == 1)
+            {
+                if (SET_Value.SET_bit == 0)
+                    OLED_ReverseArea(0, 0, 128, 16);
+                else if (SET_Value.SET_bit == 1)
+                    OLED_ReverseArea(72, 0, 8, 16);
+                else if (SET_Value.SET_bit == 2)
+                    OLED_ReverseArea(80, 0, 8, 16);
+                else if (SET_Value.SET_bit == 3)
+                    OLED_ReverseArea(96, 0, 8, 16);
+                else if (SET_Value.SET_bit == 4)
+                    OLED_ReverseArea(104, 0, 8, 16);
+            }
+            else if (SET_Value.currentSetting == 2)
+            {
+                if (SET_Value.SET_bit == 0)
+                    OLED_ReverseArea(0, 16, 128, 16);
+                else if (SET_Value.SET_bit == 1)
+                    OLED_ReverseArea(72, 16, 8, 16);
+                else if (SET_Value.SET_bit == 2)
+                    OLED_ReverseArea(80, 16, 8, 16);
+                else if (SET_Value.SET_bit == 3)
+                    OLED_ReverseArea(96, 16, 8, 16);
+                else if (SET_Value.SET_bit == 4)
+                    OLED_ReverseArea(104, 16, 8, 16);
+            }
+        }
+        else if (Screen_page == DATA1_page)
+        {
+            OLED_PrintString(0, 0, "输入电压", &font16x16, OLED_COLOR_NORMAL);
+            OLED_PrintString(0, 16, "输入电流", &font16x16, OLED_COLOR_NORMAL);
+            OLED_PrintString(0, 32, "输出电压", &font16x16, OLED_COLOR_NORMAL);
+            OLED_PrintString(0, 48, "输出电流", &font16x16, OLED_COLOR_NORMAL);
+            OLED_PrintASCIIChar(64, 0, ':', &afont16x8, OLED_COLOR_NORMAL);
+            OLED_PrintASCIIChar(64, 16, ':', &afont16x8, OLED_COLOR_NORMAL);
+            OLED_PrintASCIIChar(64, 32, ':', &afont16x8, OLED_COLOR_NORMAL);
+            OLED_PrintASCIIChar(64, 48, ':', &afont16x8, OLED_COLOR_NORMAL);
+            sprintf(buf, "%5.2f", VIN + 0.005F);
+            OLED_PrintASCIIString(72, 0, buf, &afont16x8, OLED_COLOR_NORMAL);
+            OLED_PrintASCIIChar(112, 0, 'V', &afont16x8, OLED_COLOR_NORMAL);
+            sprintf(buf, "%5.2f", IIN + 0.005F);
+            OLED_PrintASCIIString(72, 16, buf, &afont16x8, OLED_COLOR_NORMAL);
+            OLED_PrintASCIIChar(112, 16, 'A', &afont16x8, OLED_COLOR_NORMAL);
+            sprintf(buf, "%5.2f", VOUT + 0.005F);
+            OLED_PrintASCIIString(72, 32, buf, &afont16x8, OLED_COLOR_NORMAL);
+            OLED_PrintASCIIChar(112, 32, 'V', &afont16x8, OLED_COLOR_NORMAL);
+            sprintf(buf, "%5.2f", IOUT + 0.005F);
+            OLED_PrintASCIIString(72, 48, buf, &afont16x8, OLED_COLOR_NORMAL);
+            OLED_PrintASCIIChar(112, 48, 'A', &afont16x8, OLED_COLOR_NORMAL);
+        }
+        else if (Screen_page == DATA2_page)
+        {
+            OLED_PrintString(0, 0, "MCU温度", &font16x16, OLED_COLOR_NORMAL);
+            OLED_PrintString(0, 16, "主板温度", &font16x16, OLED_COLOR_NORMAL);
+            OLED_PrintString(0, 32, "转换效率", &font16x16, OLED_COLOR_NORMAL);
+            OLED_PrintASCIIChar(64, 0, ':', &afont16x8, OLED_COLOR_NORMAL);
+            OLED_PrintASCIIChar(64, 16, ':', &afont16x8, OLED_COLOR_NORMAL);
+            OLED_PrintASCIIChar(64, 32, ':', &afont16x8, OLED_COLOR_NORMAL);
+            sprintf(buf, "%5.2f", CPU_TEMP + 0.005F);
+            OLED_PrintASCIIString(72, 0, buf, &afont16x8, OLED_COLOR_NORMAL);
+            OLED_PrintASCIIChar(112, 0, 'C', &afont16x8, OLED_COLOR_NORMAL);
+            sprintf(buf, "%5.2f", MainBoard_TEMP + 0.005F);
+            OLED_PrintASCIIString(72, 16, buf, &afont16x8, OLED_COLOR_NORMAL);
+            OLED_PrintASCIIChar(112, 16, 'C', &afont16x8, OLED_COLOR_NORMAL);
+            sprintf(buf, "%2.2f%%", powerEfficiency);
+            OLED_PrintASCIIString(72, 32, buf, &afont16x8, OLED_COLOR_NORMAL);
+        }
+        else if (Screen_page == SET_page)
+        {
+            OLED_PrintString(0, 0, "过温保护", &font16x16, OLED_COLOR_NORMAL);
+            OLED_PrintString(0, 16, "过流保护", &font16x16, OLED_COLOR_NORMAL);
+            OLED_PrintString(0, 32, "过压保护", &font16x16, OLED_COLOR_NORMAL);
+            OLED_PrintASCIIChar(64, 0, ':', &afont16x8, OLED_COLOR_NORMAL);
+            OLED_PrintASCIIChar(64, 16, ':', &afont16x8, OLED_COLOR_NORMAL);
+            OLED_PrintASCIIChar(64, 32, ':', &afont16x8, OLED_COLOR_NORMAL);
+            sprintf(buf, "%5.2f", MAX_OTP_VAL + 0.005F);
+            OLED_PrintASCIIString(72, 0, buf, &afont16x8, OLED_COLOR_NORMAL);
+            OLED_PrintASCIIChar(112, 0, 'C', &afont16x8, OLED_COLOR_NORMAL);
+            sprintf(buf, "%5.2f", MAX_VOUT_OCP_VAL + 0.005F);
+            OLED_PrintASCIIString(72, 16, buf, &afont16x8, OLED_COLOR_NORMAL);
+            OLED_PrintASCIIChar(112, 16, 'A', &afont16x8, OLED_COLOR_NORMAL);
+            sprintf(buf, "%5.2f", MAX_VOUT_OVP_VAL + 0.005F);
+            OLED_PrintASCIIString(72, 32, buf, &afont16x8, OLED_COLOR_NORMAL);
+            OLED_PrintASCIIChar(112, 32, 'V', &afont16x8, OLED_COLOR_NORMAL);
+
+            if (SET_Value.currentSetting == 1)
+            {
+                if (SET_Value.SET_bit == 0)
+                    OLED_ReverseArea(0, 0, 128, 16);
+                else if (SET_Value.SET_bit == 1)
+                    OLED_ReverseArea(72, 0, 8, 16);
+                else if (SET_Value.SET_bit == 2)
+                    OLED_ReverseArea(80, 0, 8, 16);
+                else if (SET_Value.SET_bit == 3)
+                    OLED_ReverseArea(96, 0, 8, 16);
+                else if (SET_Value.SET_bit == 4)
+                    OLED_ReverseArea(104, 0, 8, 16);
+            }
+            else if (SET_Value.currentSetting == 2)
+            {
+                if (SET_Value.SET_bit == 0)
+                    OLED_ReverseArea(0, 16, 128, 16);
+                else if (SET_Value.SET_bit == 1)
+                    OLED_ReverseArea(72, 16, 8, 16);
+                else if (SET_Value.SET_bit == 2)
+                    OLED_ReverseArea(80, 16, 8, 16);
+                else if (SET_Value.SET_bit == 3)
+                    OLED_ReverseArea(96, 16, 8, 16);
+                else if (SET_Value.SET_bit == 4)
+                    OLED_ReverseArea(104, 16, 8, 16);
+            }
+            else if (SET_Value.currentSetting == 3)
+            {
+                if (SET_Value.SET_bit == 0)
+                    OLED_ReverseArea(0, 32, 128, 16);
+                else if (SET_Value.SET_bit == 1)
+                    OLED_ReverseArea(72, 32, 8, 16);
+                else if (SET_Value.SET_bit == 2)
+                    OLED_ReverseArea(80, 32, 8, 16);
+                else if (SET_Value.SET_bit == 3)
+                    OLED_ReverseArea(96, 32, 8, 16);
+                else if (SET_Value.SET_bit == 4)
+                    OLED_ReverseArea(104, 32, 8, 16);
+            }
+        }
+        OLED_ShowFrame();
+    }
+    else
+    {
+        OLED_NewFrame();
+        if (getRegBits(DF.ErrFlag, F_SW_VOUT_OVP))
+            OLED_PrintString(32, 0, "输出过压", &font16x16, OLED_COLOR_NORMAL);
+        if (getRegBits(DF.ErrFlag, F_SW_IOUT_OCP))
+            OLED_PrintString(32, 16, "输出过流", &font16x16, OLED_COLOR_NORMAL);
+        if (getRegBits(DF.ErrFlag, F_SW_SHORT))
+            OLED_PrintString(32, 32, "输出短路", &font16x16, OLED_COLOR_NORMAL);
+        if (getRegBits(DF.ErrFlag, F_OTP))
+            OLED_PrintString(32, 48, "温度过高", &font16x16, OLED_COLOR_NORMAL);
+        OLED_ShowFrame();
+    }
 }
