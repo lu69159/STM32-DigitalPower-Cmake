@@ -11,7 +11,7 @@
 void Task_Init(void){
   DF.SMFlag = Init;                         // 初始化状态机
   HAL_TIM_PWM_Start(&htim8, TIM_CHANNEL_3); // 启动定时器8和通道3的PWM输出
-  //FAN_PWM_set(100);                         // 设置风扇转速为100%
+  FAN_PWM_set(100);                         // 设置风扇转速为100%
   OLED_Init();
   OLED_PrintString(0, 0, "Loading...", &font16x16, OLED_COLOR_NORMAL);
   HAL_TIM_Base_Start_IT(&htim2);            // 1kHz
@@ -37,7 +37,7 @@ void Task_Init(void){
   HAL_GPIO_WritePin(GPIOC, LED_G_Pin | LED_R_Pin, GPIO_PIN_RESET);
   HAL_GPIO_WritePin(BUZZER_GPIO_Port, BUZZER_Pin, GPIO_PIN_RESET); // 关闭LED_G和LED_R，关闭蜂鸣器
 
-  //FAN_PWM_set(0); // 设置风扇转速为0
+  FAN_PWM_set(0); // 设置风扇转速为0
 }
 
 void Task_Run(void){

@@ -7,6 +7,13 @@
 
 #define ADC_MAX_VALUE 8190.0F
 #define REF_3V3 3.3006F
+#define TS_CAL1 *((__IO uint16_t *)0x1FFF75A8)
+#define TS_CAL2 *((__IO uint16_t *)0x1FFF75CA)
+#define TS_CAL1_TEMP 30.0F
+#define TS_CAL2_TEMP 130.0F
+
+#define MAX_SHORT_I 10.1F
+#define MIN_SHORT_V 0.5F
 
 #define MIN_BUKC_DUTY 100
 #define MAX_BUCK_DUTY 28200
@@ -130,12 +137,40 @@ extern struct _SET_Value SET_Value;
 extern volatile float MAX_OTP_VAL;
 extern volatile float MAX_VOUT_OVP_VAL;
 extern volatile float MAX_VOUT_OCP_VAL;
+extern volatile uint8_t Encoder_Flag;
+extern SState_M STState;
+extern _Screen_page Screen_page;
 
 void Init_Flash(void);
 void Update_Flash(void);
 void Read_Flash(void);
 void float_to_bytes(float value, uint8_t *bytes);
 float bytes_to_float(uint8_t *bytes);
+
+void Key_Process(void);
+void Encoder(void);
+void ADCSample(void);
+void ADC_calculate(void);
+void StateM(void);
+void StateMInit(void);
+void ValInit(void);
+void StateMWait(void);
+void StateMRise(void);
+void StateMRun(void);
+void StateMErr(void);
+void ShortOff(void);
+void OVP(void);
+void OCP(void);
+void OTP(void);
+void BBMode(void);
+void BUZZER_Short(void);
+void BUZZER_Middle(void);
+float GET_NTC_Temperature(void);
+float GET_CPU_Temperature(void);
+float calculateTemperature(float voltage);
+float one_order_lowpass_filter(float input, float alpha);
+void FAN_PWM_set(uint16_t dutyCycle);
+void Auto_FAN(void);
 
 #define setRegBits(reg, mask) (reg |= (unsigned int)(mask))
 #define clrRegBits(reg, mask) (reg &= (unsigned int)(~(unsigned int)(mask)))

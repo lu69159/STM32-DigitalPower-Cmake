@@ -31,6 +31,10 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "task.h"
+#include "function.h"
+#include "Key.h"
+#include "PID.h"
+#include "usart.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -51,7 +55,10 @@
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
-
+volatile uint16_t ms_cnt_1 = 0;
+volatile uint16_t ms_cnt_2 = 0;
+volatile uint16_t ms_cnt_3 = 0;
+volatile uint16_t ms_cnt_4 = 0;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -118,6 +125,55 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
+    Encoder();
+
+    if (ms_cnt_3 >= 10)
+    {
+      ms_cnt_3 = 0;
+      BUZZER_Short();
+      ADC_calculate();
+    }
+
+    if (ms_cnt_4 >= 50)
+    {
+      ms_cnt_4 = 0;
+      BUZZER_Middle();
+
+      if ((DF.SMFlag == Rise) || (DF.SMFlag == Run))
+      {
+        HAL_GPIO_WritePin(LED_G_GPIO_Port, LED_G_Pin, GPIO_PIN_SET);
+      }
+      else
+      {
+        HAL_GPIO_WritePin(LED_G_GPIO_Port, LED_G_Pin, GPIO_PIN_RESET);
+      }
+
+      if (IOUT >= 0.1)
+      {
+        powerEfficiency = (VOUT * IOUT) / (VIN * IIN) * 100.0;
+      }
+      else
+      {
+        powerEfficiency = 0;
+      }
+
+      USART1_Printf("%.3f,%.3f,%.3f,%.3f,%.2f,%.2f,%.2f,%d\n", VIN, IIN, VOUT, IOUT, MainBoard_TEMP, CPU_TEMP, powerEfficiency, CVCC_Mode);
+    }
+
+    if (ms_cnt_2 >= 100)
+    {
+      ms_cnt_2 = 0;
+      Auto_FAN();
+    }
+
+    if (ms_cnt_1 >= 500)
+    {
+      ms_cnt_1 = 0;
+      HAL_GPIO_TogglePin(LED_R_GPIO_Port, LED_R_Pin);
+      Update_Flash();
+    }
+
+    HAL_IWDG_Refresh(&hiwdg);
   }
   /* USER CODE END 3 */
 }
@@ -173,6 +229,34 @@ void SystemClock_Config(void)
 }
 
 /* USER CODE BEGIN 4 */
+
+void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
+{
+  if (htim->Instance == TIM2)
+  {
+    ms_cnt_1++;
+    ms_cnt_2++;
+    ms_cnt_3++;
+    ms_cnt_4++;
+  }
+  if (htim->Instance == TIM3)
+  {
+    ADCSample();
+    ShortOff();
+    OTP();
+    OVP();
+    OCP();
+    StateM();
+    BBMode();
+  }
+  if (htim->Instance == TIM4)
+  {
+    KEY_Scan(1, KEY1);
+    KEY_Scan(2, KEY2);
+    KEY_Scan(3, Encoder_KEY);
+    Key_Process();
+  }
+}
 
 /* USER CODE END 4 */
 

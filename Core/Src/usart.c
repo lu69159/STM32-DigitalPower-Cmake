@@ -183,4 +183,63 @@ void HAL_UART_MspDeInit(UART_HandleTypeDef* uartHandle)
 
 /* USER CODE BEGIN 1 */
 
+volatile uint8_t usart_dma_tx_over = 1;
+
+uint16_t calculateStringLength(const uint8_t *str)
+{
+  int length = 0;
+  while (*str)
+  {
+    if (*str == '\\')
+    {
+      if (*(str + 1) != '\0')
+      {
+        length += 2;
+        str++;
+      }
+      else
+      {
+        length++;
+      }
+    }
+    else
+    {
+      length++;
+    }
+    str++;
+  }
+  return length;
+}
+
+void USART1_TX_DMA_String(uint8_t *pBuf)
+{
+  for (volatile uint16_t i = 0; i < 1000 && (!usart_dma_tx_over); i++);
+  usart_dma_tx_over = 0;
+  HAL_UART_Transmit_DMA(&huart1, pBuf, calculateStringLength(pBuf));
+}
+
+int USART1_Printf(const char *format, ...)
+{
+  va_list arg;
+  static char SendBuff[200] = {0};
+  int rv;
+  for (volatile uint16_t i = 0; i < 1000 && (!usart_dma_tx_over); i++);
+
+  va_start(arg, format);
+  rv = vsnprintf((char *)SendBuff, sizeof(SendBuff), (char *)format, arg);
+  va_end(arg);
+
+  usart_dma_tx_over = 0;
+  HAL_UART_Transmit_DMA(&huart1, (uint8_t *)SendBuff, rv);
+
+  return rv;
+}
+
+void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart)
+{
+  if (huart->Instance == USART1)
+  {
+    usart_dma_tx_over = 1;
+  }
+}
 /* USER CODE END 1 */
