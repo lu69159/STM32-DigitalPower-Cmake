@@ -1,5 +1,6 @@
 #include "task.h"
 #include "main.h"
+#include "stm32g4xx_hal.h"
 #include "tim.h"
 #include "adc.h"
 #include "hrtim.h"
@@ -7,13 +8,25 @@
 #include "function.h"
 #include "Key.h"
 #include "PID.h"
+#include "iwdg.h"
+#include "usart.h"
+#include "gpio.h"
+
+extern volatile uint16_t ms_cnt_1;
+extern volatile uint16_t ms_cnt_2;
+extern volatile uint16_t ms_cnt_3;
+extern volatile uint16_t ms_cnt_4;
 
 void Task_Init(void){
   DF.SMFlag = Init;                         // 初始化状态机
   HAL_TIM_PWM_Start(&htim8, TIM_CHANNEL_3); // 启动定时器8和通道3的PWM输出
   FAN_PWM_set(100);                         // 设置风扇转速为100%
+  HAL_Delay(20);
   OLED_Init();
-  OLED_PrintString(0, 0, "Loading...", &font16x16, OLED_COLOR_NORMAL);
+  test("loading");
+  //OLED_NewFrame();
+  //OLED_PrintString(0, 0, "Loading...", &font16x16, OLED_COLOR_NORMAL);
+  //OLED_ShowFrame();
   HAL_TIM_Base_Start_IT(&htim2);            // 1kHz
   HAL_TIM_Base_Start_IT(&htim3);            // 200Hz
   HAL_TIM_Base_Start_IT(&htim4);            // 100Hz
@@ -41,5 +54,74 @@ void Task_Init(void){
 }
 
 void Task_Run(void){
+    HAL_GPIO_WritePin(GPIOC, GPIO_PIN_5, GPIO_PIN_SET);//TEST
+    
+    test("0");
 
+    Encoder();
+
+    test("1");
+
+    if (ms_cnt_3 >= 10)
+    {
+      ms_cnt_3 = 0;
+      BUZZER_Short();
+      ADC_calculate();
+    }
+
+    test("2");
+
+    if (ms_cnt_4 >= 50)
+    {
+      ms_cnt_4 = 0;
+      BUZZER_Middle();
+
+      if ((DF.SMFlag == Rise) || (DF.SMFlag == Run))
+      {
+        HAL_GPIO_WritePin(LED_G_GPIO_Port, LED_G_Pin, GPIO_PIN_SET);
+      }
+      else
+      {
+        HAL_GPIO_WritePin(LED_G_GPIO_Port, LED_G_Pin, GPIO_PIN_RESET);
+      }
+
+      if (IOUT >= 0.1)
+      {
+        powerEfficiency = (VOUT * IOUT) / (VIN * IIN) * 100.0;
+      }
+      else
+      {
+        powerEfficiency = 0;
+      }
+
+      USART1_Printf("%.3f,%.3f,%.3f,%.3f,%.2f,%.2f,%.2f,%d\n", VIN, IIN, VOUT, IOUT, MainBoard_TEMP, CPU_TEMP, powerEfficiency, CVCC_Mode);
+    }
+
+    test("3");
+
+    if (ms_cnt_2 >= 100)
+    {
+      ms_cnt_2 = 0;
+      OLED_Display();
+      Auto_FAN();
+    }
+
+    test("4");
+
+    if (ms_cnt_1 >= 500)
+    {
+      ms_cnt_1 = 0;
+      HAL_GPIO_TogglePin(LED_R_GPIO_Port, LED_R_Pin);
+      Update_Flash();
+    }
+
+    HAL_GPIO_WritePin(GPIOC, GPIO_PIN_5, GPIO_PIN_RESET);//TEST
+
+    HAL_IWDG_Refresh(&hiwdg);
+}
+
+void test(char *str){
+  OLED_NewFrame();
+  OLED_PrintString(0, 0, str, &font16x16, OLED_COLOR_NORMAL);
+  OLED_ShowFrame();
 }

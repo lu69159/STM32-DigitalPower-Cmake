@@ -2,7 +2,7 @@
 #include "hrtim.h"
 #include "function.h"
 
-#define CCMRAM __attribute__((section("ccmram")))
+#define CCMRAM __attribute__((section(".RamFunc")))
 
 extern volatile uint16_t ADC1_RESULT[4];
 volatile int32_t VErr0 = 0, VErr1 = 0, VErr2 = 0;
