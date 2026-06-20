@@ -23,10 +23,9 @@ void Task_Init(void){
   FAN_PWM_set(100);                         // 设置风扇转速为100%
   HAL_Delay(20);
   OLED_Init();
-  test("loading");
-  //OLED_NewFrame();
-  //OLED_PrintString(0, 0, "Loading...", &font16x16, OLED_COLOR_NORMAL);
-  //OLED_ShowFrame();
+  OLED_NewFrame();
+  OLED_PrintString(0, 0, "Loading...", &font16x16, OLED_COLOR_NORMAL);
+  OLED_ShowFrame();
   HAL_TIM_Base_Start_IT(&htim2);            // 1kHz
   HAL_TIM_Base_Start_IT(&htim3);            // 200Hz
   HAL_TIM_Base_Start_IT(&htim4);            // 100Hz
@@ -44,23 +43,15 @@ void Task_Init(void){
   HAL_ADC_Start(&hadc5);                                 // 启动ADC5采样，采样单片机CPU温度
 
   HAL_HRTIM_WaveformCountStart(&hhrtim1, HRTIM_TIMERID_TIMER_D);
-  HAL_HRTIM_WaveformCountStart(&hhrtim1, HRTIM_TIMERID_TIMER_F);                     // 开启HRTIM波形计数器
+  HAL_HRTIM_WaveformCountStart(&hhrtim1, HRTIM_TIMERID_TIMER_F);      // 开启HRTIM波形计数器
   __HAL_HRTIM_TIMER_ENABLE_IT(&hhrtim1, HRTIM_TIMERINDEX_TIMER_D, HRTIM_TIM_IT_REP); // 开启HRTIM定时器D的中断
-
   HAL_GPIO_WritePin(GPIOC, LED_G_Pin | LED_R_Pin, GPIO_PIN_RESET);
   HAL_GPIO_WritePin(BUZZER_GPIO_Port, BUZZER_Pin, GPIO_PIN_RESET); // 关闭LED_G和LED_R，关闭蜂鸣器
-
   FAN_PWM_set(0); // 设置风扇转速为0
 }
 
-void Task_Run(void){
-    HAL_GPIO_WritePin(GPIOC, GPIO_PIN_5, GPIO_PIN_SET);//TEST
-    
-    test("0");
-
+void Task_Run(void){    
     Encoder();
-
-    test("1");
 
     if (ms_cnt_3 >= 10)
     {
@@ -68,8 +59,6 @@ void Task_Run(void){
       BUZZER_Short();
       ADC_calculate();
     }
-
-    test("2");
 
     if (ms_cnt_4 >= 50)
     {
@@ -97,16 +86,12 @@ void Task_Run(void){
       USART1_Printf("%.3f,%.3f,%.3f,%.3f,%.2f,%.2f,%.2f,%d\n", VIN, IIN, VOUT, IOUT, MainBoard_TEMP, CPU_TEMP, powerEfficiency, CVCC_Mode);
     }
 
-    test("3");
-
     if (ms_cnt_2 >= 100)
     {
       ms_cnt_2 = 0;
       OLED_Display();
       Auto_FAN();
     }
-
-    test("4");
 
     if (ms_cnt_1 >= 500)
     {
@@ -115,9 +100,8 @@ void Task_Run(void){
       Update_Flash();
     }
 
-    HAL_GPIO_WritePin(GPIOC, GPIO_PIN_5, GPIO_PIN_RESET);//TEST
-
     HAL_IWDG_Refresh(&hiwdg);
+    //HRTIM1中断还有很大问题，以及OLED的数值显示
 }
 
 void test(char *str){

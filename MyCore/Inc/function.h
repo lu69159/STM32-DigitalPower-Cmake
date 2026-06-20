@@ -3,7 +3,7 @@
 
 #include "main.h"
 
-#define CCMRAM __attribute__((section(".RamFunc")))
+#define CCMRAM __attribute__((section("ccmram")))
 
 #define ADC_MAX_VALUE 8190.0F
 #define REF_3V3 3.3006F

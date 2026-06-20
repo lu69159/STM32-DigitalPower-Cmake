@@ -849,16 +849,16 @@ void OLED_Display(void)
             OLED_PrintASCIIChar(64, 32, ':', &afont16x8, OLED_COLOR_NORMAL);
             OLED_PrintASCIIChar(64, 48, ':', &afont16x8, OLED_COLOR_NORMAL);
             sprintf(buf, "%5.2f", SET_Value.Vout + 0.005F);
-            OLED_PrintASCIIString(72, 0, buf, &afont16x8, OLED_COLOR_NORMAL);
+            OLED_PrintString(72, 0, buf, &afont16x8, OLED_COLOR_NORMAL);
             OLED_PrintASCIIChar(112, 0, 'V', &afont16x8, OLED_COLOR_NORMAL);
             sprintf(buf, "%5.2f", SET_Value.Iout + 0.005F);
-            OLED_PrintASCIIString(72, 16, buf, &afont16x8, OLED_COLOR_NORMAL);
+            OLED_PrintString(72, 16, buf, &afont16x8, OLED_COLOR_NORMAL);
             OLED_PrintASCIIChar(112, 16, 'A', &afont16x8, OLED_COLOR_NORMAL);
             sprintf(buf, "%5.2f", VOUT + 0.005F);
-            OLED_PrintASCIIString(72, 32, buf, &afont16x8, OLED_COLOR_NORMAL);
+            OLED_PrintString(72, 32, buf, &afont16x8, OLED_COLOR_NORMAL);
             OLED_PrintASCIIChar(112, 32, 'V', &afont16x8, OLED_COLOR_NORMAL);
             sprintf(buf, "%5.2f", IOUT + 0.005F);
-            OLED_PrintASCIIString(72, 48, buf, &afont16x8, OLED_COLOR_NORMAL);
+            OLED_PrintString(72, 48, buf, &afont16x8, OLED_COLOR_NORMAL);
             OLED_PrintASCIIChar(112, 48, 'A', &afont16x8, OLED_COLOR_NORMAL);
             if ((DF.SMFlag == Rise) || (DF.SMFlag == Run))
             {
@@ -905,16 +905,16 @@ void OLED_Display(void)
             OLED_PrintASCIIChar(64, 32, ':', &afont16x8, OLED_COLOR_NORMAL);
             OLED_PrintASCIIChar(64, 48, ':', &afont16x8, OLED_COLOR_NORMAL);
             sprintf(buf, "%5.2f", VIN + 0.005F);
-            OLED_PrintASCIIString(72, 0, buf, &afont16x8, OLED_COLOR_NORMAL);
+            OLED_PrintString(72, 0, buf, &afont16x8, OLED_COLOR_NORMAL);
             OLED_PrintASCIIChar(112, 0, 'V', &afont16x8, OLED_COLOR_NORMAL);
             sprintf(buf, "%5.2f", IIN + 0.005F);
-            OLED_PrintASCIIString(72, 16, buf, &afont16x8, OLED_COLOR_NORMAL);
+            OLED_PrintString(72, 16, buf, &afont16x8, OLED_COLOR_NORMAL);
             OLED_PrintASCIIChar(112, 16, 'A', &afont16x8, OLED_COLOR_NORMAL);
             sprintf(buf, "%5.2f", VOUT + 0.005F);
-            OLED_PrintASCIIString(72, 32, buf, &afont16x8, OLED_COLOR_NORMAL);
+            OLED_PrintString(72, 32, buf, &afont16x8, OLED_COLOR_NORMAL);
             OLED_PrintASCIIChar(112, 32, 'V', &afont16x8, OLED_COLOR_NORMAL);
             sprintf(buf, "%5.2f", IOUT + 0.005F);
-            OLED_PrintASCIIString(72, 48, buf, &afont16x8, OLED_COLOR_NORMAL);
+            OLED_PrintString(72, 48, buf, &afont16x8, OLED_COLOR_NORMAL);
             OLED_PrintASCIIChar(112, 48, 'A', &afont16x8, OLED_COLOR_NORMAL);
         }
         else if (Screen_page == DATA2_page)
@@ -926,13 +926,13 @@ void OLED_Display(void)
             OLED_PrintASCIIChar(64, 16, ':', &afont16x8, OLED_COLOR_NORMAL);
             OLED_PrintASCIIChar(64, 32, ':', &afont16x8, OLED_COLOR_NORMAL);
             sprintf(buf, "%5.2f", CPU_TEMP + 0.005F);
-            OLED_PrintASCIIString(72, 0, buf, &afont16x8, OLED_COLOR_NORMAL);
+            OLED_PrintString(72, 0, buf, &afont16x8, OLED_COLOR_NORMAL);
             OLED_PrintASCIIChar(112, 0, 'C', &afont16x8, OLED_COLOR_NORMAL);
             sprintf(buf, "%5.2f", MainBoard_TEMP + 0.005F);
-            OLED_PrintASCIIString(72, 16, buf, &afont16x8, OLED_COLOR_NORMAL);
+            OLED_PrintString(72, 16, buf, &afont16x8, OLED_COLOR_NORMAL);
             OLED_PrintASCIIChar(112, 16, 'C', &afont16x8, OLED_COLOR_NORMAL);
             sprintf(buf, "%2.2f%%", powerEfficiency);
-            OLED_PrintASCIIString(72, 32, buf, &afont16x8, OLED_COLOR_NORMAL);
+            OLED_PrintString(72, 32, buf, &afont16x8, OLED_COLOR_NORMAL);
         }
         else if (Screen_page == SET_page)
         {
@@ -943,13 +943,13 @@ void OLED_Display(void)
             OLED_PrintASCIIChar(64, 16, ':', &afont16x8, OLED_COLOR_NORMAL);
             OLED_PrintASCIIChar(64, 32, ':', &afont16x8, OLED_COLOR_NORMAL);
             sprintf(buf, "%5.2f", MAX_OTP_VAL + 0.005F);
-            OLED_PrintASCIIString(72, 0, buf, &afont16x8, OLED_COLOR_NORMAL);
+            OLED_PrintString(72, 0, buf, &afont16x8, OLED_COLOR_NORMAL);
             OLED_PrintASCIIChar(112, 0, 'C', &afont16x8, OLED_COLOR_NORMAL);
             sprintf(buf, "%5.2f", MAX_VOUT_OCP_VAL + 0.005F);
-            OLED_PrintASCIIString(72, 16, buf, &afont16x8, OLED_COLOR_NORMAL);
+            OLED_PrintString(72, 16, buf, &afont16x8, OLED_COLOR_NORMAL);
             OLED_PrintASCIIChar(112, 16, 'A', &afont16x8, OLED_COLOR_NORMAL);
             sprintf(buf, "%5.2f", MAX_VOUT_OVP_VAL + 0.005F);
-            OLED_PrintASCIIString(72, 32, buf, &afont16x8, OLED_COLOR_NORMAL);
+            OLED_PrintString(72, 32, buf, &afont16x8, OLED_COLOR_NORMAL);
             OLED_PrintASCIIChar(112, 32, 'V', &afont16x8, OLED_COLOR_NORMAL);
 
             if (SET_Value.currentSetting == 1)

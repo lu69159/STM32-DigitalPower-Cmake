@@ -329,7 +329,9 @@ void HRTIM1_TIMD_IRQHandler(void)
   /* USER CODE END HRTIM1_TIMD_IRQn 0 */
   HAL_HRTIM_IRQHandler(&hhrtim1,HRTIM_TIMERINDEX_TIMER_D);
   /* USER CODE BEGIN HRTIM1_TIMD_IRQn 1 */
-  //BuckBoostVILoopCtlPID();  //有问题！
+  /* MODIFIED: CCM RAM 恢复后重新启用 */
+  //BuckBoostVILoopCtlPID(); //有大问题，暂时注释掉
+   
   /* USER CODE END HRTIM1_TIMD_IRQn 1 */
 }
 
