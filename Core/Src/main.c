@@ -125,7 +125,7 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-    Task_Run(); // 卡死阶段?
+    Task_Run();
   }
   /* USER CODE END 3 */
 }

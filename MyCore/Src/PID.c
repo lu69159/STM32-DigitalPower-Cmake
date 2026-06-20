@@ -47,8 +47,10 @@ CCMRAM void BuckBoostVILoopCtlPID(void)
     i0 = I_Integral + IErr0 * ILOOP_KP + (IErr0 - IErr1) * ILOOP_KD;
     I_Integral = I_Integral + IErr0 * ILOOP_KI;
 
-    if (I_Integral > ADC_MAX_VALUE)
-        I_Integral = ADC_MAX_VALUE;
+    if (I_Integral > (int32_t)ADC_MAX_VALUE)
+        I_Integral = (int32_t)ADC_MAX_VALUE;
+    if (I_Integral < -(int32_t)ADC_MAX_VALUE)
+        I_Integral = -(int32_t)ADC_MAX_VALUE;
 
     if (DF.SMFlag == Rise && (VoutTemp < (CtrValue.Vout_ref / 2)))
     {
@@ -103,6 +105,8 @@ CCMRAM void BuckBoostVILoopCtlPID(void)
         I_Integral = 0;
         IErr0 = 0;
         IErr1 = 0;
+        CtrValue.BuckDuty = MIN_BUKC_DUTY;
+        CtrValue.BoostDuty = MIN_BOOST_DUTY;
         break;
     }
     case Buck:
