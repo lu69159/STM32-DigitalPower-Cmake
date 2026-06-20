@@ -103,9 +103,3 @@ void Task_Run(void){
     HAL_IWDG_Refresh(&hiwdg);
     //HRTIM1中断还有很大问题，以及OLED的数值显示
 }
-
-void test(char *str){
-  OLED_NewFrame();
-  OLED_PrintString(0, 0, str, &font16x16, OLED_COLOR_NORMAL);
-  OLED_ShowFrame();
-}

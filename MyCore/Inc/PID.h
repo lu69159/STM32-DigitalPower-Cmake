@@ -7,5 +7,6 @@
 
 void PID_Init(void);
 void BuckBoostVILoopCtlPID(void);
+void BuckBoostVILoopCtlPID_TEST(void);
 
 #endif

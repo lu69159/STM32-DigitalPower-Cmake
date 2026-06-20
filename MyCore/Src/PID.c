@@ -1,6 +1,7 @@
 #include "PID.h"
 #include "hrtim.h"
 #include "function.h"
+#include "task.h"
 
 #define CCMRAM __attribute__((section("ccmram")))
 
@@ -34,6 +35,10 @@ void PID_Init(void)
 #define ILOOP_KI 3
 #define ILOOP_KD 1
 
+CCMRAM void BuckBoostVILoopCtlPID_TEST(void){
+    
+}
+
 CCMRAM void BuckBoostVILoopCtlPID(void)
 {
     static int32_t I_Integral = 0;
@@ -47,14 +52,14 @@ CCMRAM void BuckBoostVILoopCtlPID(void)
     i0 = I_Integral + IErr0 * ILOOP_KP + (IErr0 - IErr1) * ILOOP_KD;
     I_Integral = I_Integral + IErr0 * ILOOP_KI;
 
-    if (I_Integral > (int32_t)ADC_MAX_VALUE)
+    if (I_Integral > (int32_t)ADC_MAX_VALUE){
         I_Integral = (int32_t)ADC_MAX_VALUE;
-    if (I_Integral < -(int32_t)ADC_MAX_VALUE)
+    }
+    if (I_Integral < -(int32_t)ADC_MAX_VALUE){
         I_Integral = -(int32_t)ADC_MAX_VALUE;
+    }
 
-    if (DF.SMFlag == Rise && (VoutTemp < (CtrValue.Vout_ref / 2)))
-    {
-
+    if (DF.SMFlag == Rise && (VoutTemp < (CtrValue.Vout_ref / 2))){
         CtrValue.Vout_ref = CtrValue.Vout_ref + i0;
         CVCC_Mode = CC;
         if (CtrValue.Vout_ref > CtrValue.Vout_SSref)
@@ -67,8 +72,7 @@ CCMRAM void BuckBoostVILoopCtlPID(void)
             CtrValue.Vout_ref = 0;
         }
     }
-    else
-    {
+    else{
         CtrValue.Vout_ref = CtrValue.Vout_ref + i0;
         CVCC_Mode = CC;
         if (CtrValue.Vout_ref > CtrValue.Vout_SETref)
@@ -84,84 +88,81 @@ CCMRAM void BuckBoostVILoopCtlPID(void)
 
     VErr0 = CtrValue.Vout_ref - VoutTemp;
 
-    if (DF.BBModeChange)
-    {
+    if (DF.BBModeChange){
         u1 = 0;
         I_Integral = 0;
         i0 = 0;
         DF.BBModeChange = 0;
     }
 
-    switch (DF.BBFlag)
-    {
-    case NA:
-    {
-        VErr0 = 0;
-        VErr1 = 0;
-        VErr2 = 0;
-        u0 = 0;
-        u1 = 0;
-        i0 = 0;
-        I_Integral = 0;
-        IErr0 = 0;
-        IErr1 = 0;
-        CtrValue.BuckDuty = MIN_BUKC_DUTY;
-        CtrValue.BoostDuty = MIN_BOOST_DUTY;
-        break;
-    }
-    case Buck:
-    {
-        u0 = u1 + VErr0 * BUCKPIDb0 + VErr1 * BUCKPIDb1 + VErr2 * BUCKPIDb2;
-        VErr2 = VErr1;
-        VErr1 = VErr0;
-        u1 = u0;
-
-        CtrValue.BoostDuty = MIN_BOOST_DUTY1;
-        CtrValue.BuckDuty = (u0 >> 8) * 3;
-
-        if (CtrValue.BuckDuty > CtrValue.BUCKMaxDuty)
-            CtrValue.BuckDuty = CtrValue.BUCKMaxDuty;
-        if (CtrValue.BuckDuty < MIN_BUKC_DUTY)
+    switch (DF.BBFlag){
+        case NA:
+        {
+            VErr0 = 0;
+            VErr1 = 0;
+            VErr2 = 0;
+            u0 = 0;
+            u1 = 0;
+            i0 = 0;
+            I_Integral = 0;
+            IErr0 = 0;
+            IErr1 = 0;
             CtrValue.BuckDuty = MIN_BUKC_DUTY;
-        break;
-    }
-    case Boost:
-    {
-        u0 = u1 + VErr0 * BOOSTPIDb0 + VErr1 * BOOSTPIDb1 + VErr2 * BOOSTPIDb2;
-        VErr2 = VErr1;
-        VErr1 = VErr0;
-        u1 = u0;
-
-        CtrValue.BuckDuty = MAX_BUCK_DUTY;
-        CtrValue.BoostDuty = (u0 >> 8) * 3;
-
-        if (CtrValue.BoostDuty > CtrValue.BoostMaxDuty)
-            CtrValue.BoostDuty = CtrValue.BoostMaxDuty;
-        if (CtrValue.BoostDuty < MIN_BOOST_DUTY)
             CtrValue.BoostDuty = MIN_BOOST_DUTY;
-        break;
-    }
-    case Mix:
-    {
-        u0 = u1 + VErr0 * BOOSTPIDb0 + VErr1 * BOOSTPIDb1 + VErr2 * BOOSTPIDb2;
-        VErr2 = VErr1;
-        VErr1 = VErr0;
-        u1 = u0;
-        IErr1 = IErr0;
+            break;
+        }
+        case Buck:
+        {
+            u0 = u1 + VErr0 * BUCKPIDb0 + VErr1 * BUCKPIDb1 + VErr2 * BUCKPIDb2;
+            VErr2 = VErr1;
+            VErr1 = VErr0;
+            u1 = u0;
 
-        CtrValue.BuckDuty = MAX_BUCK_DUTY1;
-        CtrValue.BoostDuty = (u0 >> 8) * 3;
+            CtrValue.BoostDuty = MIN_BOOST_DUTY1;
+            CtrValue.BuckDuty = (u0 >> 8) * 3;
 
-        if (CtrValue.BoostDuty > CtrValue.BoostMaxDuty)
-            CtrValue.BoostDuty = CtrValue.BoostMaxDuty;
-        if (CtrValue.BoostDuty < MIN_BOOST_DUTY)
-            CtrValue.BoostDuty = MIN_BOOST_DUTY;
-        break;
-    }
+            if (CtrValue.BuckDuty > CtrValue.BUCKMaxDuty)
+                CtrValue.BuckDuty = CtrValue.BUCKMaxDuty;
+            if (CtrValue.BuckDuty < MIN_BUKC_DUTY)
+                CtrValue.BuckDuty = MIN_BUKC_DUTY;
+            break;
+        }
+        case Boost:
+        {
+            u0 = u1 + VErr0 * BOOSTPIDb0 + VErr1 * BOOSTPIDb1 + VErr2 * BOOSTPIDb2;
+            VErr2 = VErr1;
+            VErr1 = VErr0;
+            u1 = u0;
+
+            CtrValue.BuckDuty = MAX_BUCK_DUTY;
+            CtrValue.BoostDuty = (u0 >> 8) * 3;
+
+            if (CtrValue.BoostDuty > CtrValue.BoostMaxDuty)
+                CtrValue.BoostDuty = CtrValue.BoostMaxDuty;
+            if (CtrValue.BoostDuty < MIN_BOOST_DUTY)
+                CtrValue.BoostDuty = MIN_BOOST_DUTY;
+            break;
+        }
+        case Mix:
+        {
+            u0 = u1 + VErr0 * BOOSTPIDb0 + VErr1 * BOOSTPIDb1 + VErr2 * BOOSTPIDb2;
+            VErr2 = VErr1;
+            VErr1 = VErr0;
+            u1 = u0;
+            IErr1 = IErr0;
+
+            CtrValue.BuckDuty = MAX_BUCK_DUTY1;
+            CtrValue.BoostDuty = (u0 >> 8) * 3;
+
+            if (CtrValue.BoostDuty > CtrValue.BoostMaxDuty)
+                CtrValue.BoostDuty = CtrValue.BoostMaxDuty;
+            if (CtrValue.BoostDuty < MIN_BOOST_DUTY)
+                CtrValue.BoostDuty = MIN_BOOST_DUTY;
+            break;
+        }
     }
 
-    if (DF.PWMENFlag == 0)
-        CtrValue.BuckDuty = MIN_BUKC_DUTY;
+    if (DF.PWMENFlag == 0){ CtrValue.BuckDuty = MIN_BUKC_DUTY; }
 
     __HAL_HRTIM_SETCOMPARE(&hhrtim1, HRTIM_TIMERINDEX_TIMER_D, HRTIM_COMPAREUNIT_1, PERIOD - CtrValue.BuckDuty);
     __HAL_HRTIM_SETCOMPARE(&hhrtim1, HRTIM_TIMERINDEX_TIMER_D, HRTIM_COMPAREUNIT_3, __HAL_HRTIM_GETCOMPARE(&hhrtim1, HRTIM_TIMERINDEX_TIMER_D, HRTIM_COMPAREUNIT_1) >> 1);
