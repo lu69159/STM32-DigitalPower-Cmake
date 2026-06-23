@@ -45,27 +45,12 @@ _Min_Stack_Size = 0x400; /* required amount of stack */
 MEMORY
 {
   RAM    (xrw)    : ORIGIN = 0x20000000,   LENGTH = 128K
-  CCMRAM (xrw)    : ORIGIN = 0x10000000, LENGTH = 8K
   FLASH    (rx)    : ORIGIN = 0x8000000,   LENGTH = 512K
 }
 
 /* Sections */
 SECTIONS
 {
-  /* CCMRAM */
-  .ccmram :
-  {
-    . = ALIGN(4);
-    _sccmram = .;
-    *(.ccmram)
-    *(.ccmram*)
-    *(ccmram)
-    *(ccmram*)
-    . = ALIGN(4);
-    _eccmram = .;
-  } >CCMRAM AT> FLASH
-
-  _siccmram = LOADADDR(.ccmram);
 
   /* The startup code into "FLASH" Rom type memory */
   .isr_vector :
