@@ -24,7 +24,7 @@ add_link_options(
     -Wl,-Map=${CMAKE_PROJECT_NAME}.map,--cref
     -Wl,--gc-sections
     --specs=nano.specs
-    -Wl,--start-group -lc -lm -Wl,--end-group
+    -Wl,--start-group -lc -lm -Wl,--end-group -Wl,-u,_printf_float
 )
 
 add_definitions(-DUSE_HAL_DRIVER -DSTM32G474xx)
