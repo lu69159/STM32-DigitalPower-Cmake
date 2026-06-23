@@ -20,8 +20,8 @@ extern volatile uint16_t ms_cnt_4;
 void Task_Init(void){
   DF.SMFlag = Init;                         // 初始化状态机
   HAL_TIM_PWM_Start(&htim8, TIM_CHANNEL_3); // 启动定时器8和通道3的PWM输出
-  FAN_PWM_set(100);                         // 设置风扇转速为100%
-  HAL_Delay(20);
+  //FAN_PWM_set(100);                         // 设置风扇转速为100%
+  HAL_Delay(20);  //OLED延时
   OLED_Init();
   OLED_NewFrame();
   OLED_PrintString(0, 0, "Loading...", &font16x16, OLED_COLOR_NORMAL);
@@ -34,7 +34,7 @@ void Task_Init(void){
   Init_Flash();
   Read_Flash();                             // 读取Flash数据
 
-  HAL_Delay(200);                                        // 延时200ms，等待供电稳定
+  HAL_Delay(180);                                        // 延时180ms，等待供电稳定
   HAL_ADCEx_Calibration_Start(&hadc1, ADC_SINGLE_ENDED); // 校准ADC1
   HAL_ADCEx_Calibration_Start(&hadc2, ADC_SINGLE_ENDED); // 校准ADC2
   HAL_ADCEx_Calibration_Start(&hadc5, ADC_SINGLE_ENDED); // 校准ADC5
@@ -45,6 +45,7 @@ void Task_Init(void){
   HAL_HRTIM_WaveformCountStart(&hhrtim1, HRTIM_TIMERID_TIMER_D);
   HAL_HRTIM_WaveformCountStart(&hhrtim1, HRTIM_TIMERID_TIMER_F);      // 开启HRTIM波形计数器
   __HAL_HRTIM_TIMER_ENABLE_IT(&hhrtim1, HRTIM_TIMERINDEX_TIMER_D, HRTIM_TIM_IT_REP); // 开启HRTIM定时器D的中断
+
   HAL_GPIO_WritePin(GPIOC, LED_G_Pin | LED_R_Pin, GPIO_PIN_RESET);
   HAL_GPIO_WritePin(BUZZER_GPIO_Port, BUZZER_Pin, GPIO_PIN_RESET); // 关闭LED_G和LED_R，关闭蜂鸣器
   FAN_PWM_set(0); // 设置风扇转速为0
