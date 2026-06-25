@@ -1,0 +1,6 @@
+..\MyCore\Src\task.c:40:6:taskInit	1
+..\MyCore\Src\task.c:71:6:taskRun	11
+..\MyCore\Src\task.c:132:6:oledPlay	10
+..\MyCore\Src\task.c:214:6:key	7
+..\MyCore\Src\task.c:228:6:keyListening	10
+..\MyCore\Src\task.c:258:6:getADCresult	1

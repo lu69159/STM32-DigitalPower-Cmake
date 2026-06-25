@@ -1,0 +1,6 @@
+..\MyCore\Src\task.c:40:6:taskInit	16	static
+..\MyCore\Src\task.c:71:6:taskRun	32	static
+..\MyCore\Src\task.c:132:6:oledPlay	72	static
+..\MyCore\Src\task.c:214:6:key	16	static
+..\MyCore\Src\task.c:228:6:keyListening	16	static
+..\MyCore\Src\task.c:258:6:getADCresult	8	static
