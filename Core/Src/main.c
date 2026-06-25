@@ -24,6 +24,8 @@
 #include "i2c.h"
 #include "iwdg.h"
 #include "spi.h"
+#include "stm32g4xx_hal_gpio.h"
+#include "stm32g4xx_hal_uart.h"
 #include "tim.h"
 #include "usart.h"
 #include "gpio.h"
@@ -35,6 +37,7 @@
 #include "Key.h"
 #include "PID.h"
 #include "usart.h"
+#include <stdio.h>
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -116,6 +119,8 @@ int main(void)
   MX_SPI3_Init();
   /* USER CODE BEGIN 2 */
   Task_Init();
+  char test[10];
+  sprintf(test, "FUCK");
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -125,6 +130,7 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
+    USART1_Printf(test);
     Task_Run();
   }
   /* USER CODE END 3 */
@@ -207,6 +213,12 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
     KEY_Scan(2, KEY2);
     KEY_Scan(3, Encoder_KEY);
     Key_Process();
+  }
+}
+
+void HAL_HRTIM_RepetitionEventCallback(HRTIM_HandleTypeDef *hhrtim, uint32_t TimerIdx){
+  if(hhrtim->Instance == HRTIM1 && TimerIdx == HRTIM_TIMERINDEX_TIMER_D){
+    BuckBoostVILoopCtlPID();
   }
 }
 

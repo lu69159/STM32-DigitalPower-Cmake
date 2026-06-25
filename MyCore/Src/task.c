@@ -85,7 +85,8 @@ void Task_Run(void){
         powerEfficiency = 0;
       }
 
-      USART1_Printf("%.3f,%.3f,%.3f,%.3f,%.2f,%.2f,%.2f,%d\n", VIN, IIN, VOUT, IOUT, MainBoard_TEMP, CPU_TEMP, powerEfficiency, CVCC_Mode);
+      //TEST
+      //USART1_Printf("%.3f,%.3f,%.3f,%.3f,%.2f,%.2f,%.2f,%d\n", VIN, IIN, VOUT, IOUT, MainBoard_TEMP, CPU_TEMP, powerEfficiency, CVCC_Mode);
     }
 
     if (ms_cnt_2 >= 100)
@@ -103,5 +104,4 @@ void Task_Run(void){
     }
 
     HAL_IWDG_Refresh(&hiwdg);
-    //HRTIM1中断还有很大问题，以及OLED的数值显示
 }
