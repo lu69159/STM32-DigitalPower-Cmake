@@ -1,6 +1,7 @@
 #include "task.h"
 #include "main.h"
 #include "stm32g4xx_hal.h"
+#include "stm32g4xx_hal_gpio.h"
 #include "tim.h"
 #include "adc.h"
 #include "hrtim.h"
@@ -51,7 +52,7 @@ void Task_Init(void){
   FAN_PWM_set(0); // 设置风扇转速为0
 }
 
-void Task_Run(void){    
+void Task_Run(void){
     Encoder();
 
     if (ms_cnt_3 >= 10)

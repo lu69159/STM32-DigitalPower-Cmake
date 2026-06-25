@@ -25,12 +25,16 @@ volatile uint8_t BUZZER_Short_Flag = 0;
 volatile uint8_t BUZZER_Flag = 0;
 volatile uint8_t BUZZER_Middle_Flag = 0;
 volatile float MAX_OTP_VAL = 80.0F;
-volatile float MAX_VOUT_OVP_VAL = 50.0F;
+volatile float MAX_VOUT_OVP_VAL = 35.0F;
 volatile float MAX_VOUT_OCP_VAL = 10.5F;
+volatile float MIN_V = 0.5F;
+volatile float MAX_V = 30.0F;
+volatile float MIN_I = 0.01F;
+volatile float MAX_I = 10.0F;
 
 extern volatile int32_t VErr0, VErr1, VErr2;
 extern volatile int32_t u0, u1;
-
+    
 void float_to_bytes(float value, uint8_t *bytes)
 {
     memcpy(bytes, &value, sizeof(float));
@@ -296,10 +300,10 @@ void Encoder(void)
                 {
                     if (SET_Value.currentSetting == 1)
                     {
-                        if (SET_Value.SET_bit == 1) { SET_Value.Vout += 10.0F; if (SET_Value.Vout > 48.5) SET_Value.Vout -= 10.0F; }
-                        else if (SET_Value.SET_bit == 2) { SET_Value.Vout += 1; if (SET_Value.Vout > 48.5) SET_Value.Vout = 48.5F; }
-                        else if (SET_Value.SET_bit == 3) { SET_Value.Vout += 0.1F; if (SET_Value.Vout > 48.5) SET_Value.Vout -= 0.1F; }
-                        else if (SET_Value.SET_bit == 4) { SET_Value.Vout += 0.01F; if (SET_Value.Vout > 48.5) SET_Value.Vout -= 0.01F; }
+                        if (SET_Value.SET_bit == 1) { SET_Value.Vout += 10.0F; if (SET_Value.Vout > MAX_V) SET_Value.Vout -= 10.0F; }
+                        else if (SET_Value.SET_bit == 2) { SET_Value.Vout += 1; if (SET_Value.Vout > MAX_V) SET_Value.Vout = MAX_V; }
+                        else if (SET_Value.SET_bit == 3) { SET_Value.Vout += 0.1F; if (SET_Value.Vout > MAX_V) SET_Value.Vout -= 0.1F; }
+                        else if (SET_Value.SET_bit == 4) { SET_Value.Vout += 0.01F; if (SET_Value.Vout > MAX_V) SET_Value.Vout -= 0.01F; }
                         if (SET_Value.SET_bit != 0)
                         {
                             SET_Value.SET_modified_flag = 1;
@@ -309,10 +313,10 @@ void Encoder(void)
                     }
                     else if (SET_Value.currentSetting == 2)
                     {
-                        if (SET_Value.SET_bit == 1) { SET_Value.Iout += 10.0F; if (SET_Value.Iout > 10.1) SET_Value.Iout -= 10.0F; }
-                        else if (SET_Value.SET_bit == 2) { SET_Value.Iout += 1; if (SET_Value.Iout > 10.1) SET_Value.Iout = 10.1F; }
-                        else if (SET_Value.SET_bit == 3) { SET_Value.Iout += 0.1F; if (SET_Value.Iout > 10.1) SET_Value.Iout -= 0.1F; }
-                        else if (SET_Value.SET_bit == 4) { SET_Value.Iout += 0.01F; if (SET_Value.Iout > 10.1) SET_Value.Iout -= 0.01F; }
+                        if (SET_Value.SET_bit == 1) { SET_Value.Iout += 10.0F; if (SET_Value.Iout > MAX_I) SET_Value.Iout -= 10.0F; }
+                        else if (SET_Value.SET_bit == 2) { SET_Value.Iout += 1; if (SET_Value.Iout > MAX_I) SET_Value.Iout = MAX_I; }
+                        else if (SET_Value.SET_bit == 3) { SET_Value.Iout += 0.1F; if (SET_Value.Iout > MAX_I) SET_Value.Iout -= 0.1F; }
+                        else if (SET_Value.SET_bit == 4) { SET_Value.Iout += 0.01F; if (SET_Value.Iout > MAX_I) SET_Value.Iout -= 0.01F; }
                         if (SET_Value.SET_bit != 0)
                         {
                             SET_Value.SET_modified_flag = 1;
@@ -333,18 +337,18 @@ void Encoder(void)
                     }
                     else if (SET_Value.currentSetting == 2)
                     {
-                        if (SET_Value.SET_bit == 1) { MAX_VOUT_OCP_VAL += 10.0F; if (MAX_VOUT_OCP_VAL > 10.5) MAX_VOUT_OCP_VAL -= 10; }
-                        else if (SET_Value.SET_bit == 2) { MAX_VOUT_OCP_VAL += 1.0F; if (MAX_VOUT_OCP_VAL > 10.5) MAX_VOUT_OCP_VAL = 10.5; }
-                        else if (SET_Value.SET_bit == 3) { MAX_VOUT_OCP_VAL += 0.1F; if (MAX_VOUT_OCP_VAL > 10.5) MAX_VOUT_OCP_VAL -= 0.1; }
-                        else if (SET_Value.SET_bit == 4) { MAX_VOUT_OCP_VAL += 0.01F; if (MAX_VOUT_OCP_VAL > 10.5) MAX_VOUT_OCP_VAL -= 0.01; }
+                        if (SET_Value.SET_bit == 1) { MAX_VOUT_OCP_VAL += 10.0F; if (MAX_VOUT_OCP_VAL > MAX_I + 0.5) MAX_VOUT_OCP_VAL -= 10; }
+                        else if (SET_Value.SET_bit == 2) { MAX_VOUT_OCP_VAL += 1.0F; if (MAX_VOUT_OCP_VAL > MAX_I + 0.5) MAX_VOUT_OCP_VAL = MAX_I + 0.5; }
+                        else if (SET_Value.SET_bit == 3) { MAX_VOUT_OCP_VAL += 0.1F; if (MAX_VOUT_OCP_VAL > MAX_I + 0.5) MAX_VOUT_OCP_VAL -= 0.1; }
+                        else if (SET_Value.SET_bit == 4) { MAX_VOUT_OCP_VAL += 0.01F; if (MAX_VOUT_OCP_VAL > MAX_I + 0.5) MAX_VOUT_OCP_VAL -= 0.01; }
                         if (SET_Value.SET_bit != 0) SET_Value.SET_modified_flag = 1;
                     }
                     else if (SET_Value.currentSetting == 3)
                     {
-                        if (SET_Value.SET_bit == 1) { MAX_VOUT_OVP_VAL += 10.0F; if (MAX_VOUT_OVP_VAL > 50.0) MAX_VOUT_OVP_VAL -= 10; }
-                        else if (SET_Value.SET_bit == 2) { MAX_VOUT_OVP_VAL += 1.0F; if (MAX_VOUT_OVP_VAL > 50.0) MAX_VOUT_OVP_VAL = 50.0; }
-                        else if (SET_Value.SET_bit == 3) { MAX_VOUT_OVP_VAL += 0.1F; if (MAX_VOUT_OVP_VAL > 50.0) MAX_VOUT_OVP_VAL -= 0.1; }
-                        else if (SET_Value.SET_bit == 4) { MAX_VOUT_OVP_VAL += 0.01; if (MAX_VOUT_OVP_VAL > 50.0) MAX_VOUT_OVP_VAL -= 0.01; }
+                        if (SET_Value.SET_bit == 1) { MAX_VOUT_OVP_VAL += 10.0F; if (MAX_VOUT_OVP_VAL > MAX_V + 5) MAX_VOUT_OVP_VAL -= 10; }
+                        else if (SET_Value.SET_bit == 2) { MAX_VOUT_OVP_VAL += 1.0F; if (MAX_VOUT_OVP_VAL > MAX_V + 5) MAX_VOUT_OVP_VAL = MAX_V + 5; }
+                        else if (SET_Value.SET_bit == 3) { MAX_VOUT_OVP_VAL += 0.1F; if (MAX_VOUT_OVP_VAL > MAX_V + 5) MAX_VOUT_OVP_VAL -= 0.1; }
+                        else if (SET_Value.SET_bit == 4) { MAX_VOUT_OVP_VAL += 0.01F; if (MAX_VOUT_OVP_VAL > MAX_V + 5) MAX_VOUT_OVP_VAL -= 0.01; }
                         if (SET_Value.SET_bit != 0) SET_Value.SET_modified_flag = 1;
                     }
                 }

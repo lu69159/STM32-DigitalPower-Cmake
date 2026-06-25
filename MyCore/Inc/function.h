@@ -23,6 +23,7 @@
 #define MAX_BOOST_DUTY 19500
 #define MAX_BOOST_DUTY1 28200
 
+//修正参数
 #define CAL_VOUT_K 4099
 #define CAL_VOUT_B 1
 #define CAL_IOUT_K 4095
